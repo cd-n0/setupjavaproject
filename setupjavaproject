@@ -1,0 +1,63 @@
+#!/bin/sh
+#To do list:
+#use CLASSPATH env variable instead of java -cp
+
+printf "Enter a project name:\nExample:MyProject\nProject Name: "
+read projectName
+
+printf "Project name is: $projectName\n"
+
+valid_input=false
+while [ "$valid_input" = false ]; do
+    printf "Enter a class name:\nExample: MyClass\nClass Name: "
+    read className
+    [[ "$className" =~ ^[A-Z] && "$className" =~ ^[A-Za-z0-9_\$]*$ ]] &&\
+        valid_input=true || \
+        printf "Invalid class name. Class names must start with a capital letter and can only contain letters, numbers, dollar signs, and underscores.\n"
+done
+
+printf "Class name is: $className\n"
+
+valid_input=false
+while [ "$valid_input" = false ]; do
+    printf "Enter a package name\nExample: com.example\nPackage Name: "
+    read packageName
+    printf "$packageName" | grep -qE '^[a-z]+(\.[a-z][a-z0-9]*)*$' &&\
+        valid_input=true ||\
+        printf "Invalid package name. Package names must start with a lowercase letter and can only contain letters, numbers, and underscores.\n"
+done
+printf "Package name is: $packageName\n"
+
+tld=$(printf $packageName | cut -d '.' -f 1)
+domain=$(printf $packageName | cut -d '.' -f 2)
+
+# creation of project folders
+mkdir -p $projectName/src/$className/java/$tld/$domain/$projectName
+mkdir $projectName/libs
+mkdir $projectName/build
+mkdir -p $projectName/src/$className/resources/META-INF
+
+# creation of manifest file
+touch $projectName/src/$className/resources/META-INF/MANIFEST.FM
+
+# initial java source file
+touch $projectName/src/$className/java/$tld/$domain/$projectName/$className.java
+
+# create compile bash file
+touch $projectName/javacompile
+
+# build jar file
+touch $projectName/jar-it
+
+# Uncomment for readme creation
+#touch $projectName/README.md
+
+# Fill all necessary files with proper text
+printf '#!/bin/sh\njavac -cp ./src/'$className'/java ./src/'$className'/java/'$tld'/'$domain'/'$projectName'/*.java -d ./build/\n'>$projectName/javacompile
+printf '#!/bin/sh\njar cvfm '$projectName'.jar ./src/'$className'/resources/META-INF/MANIFEST.FM -C ./build/ .\n'>jar-it
+printf 'package '$tld'.'$domain'.'$projectName';\npublic class '$className'{\n     public static void main(String args[]){\n     }\n}'>$projectName/src/$className/java/$tld/$domain/$projectName/$className.java
+printf 'Manifest-Version: 1.0\nClass-Path: .\nMain-Class: '$tld'.'$domain'.'$projectName'.'$className'\n\n'>$projectName/src/$className/resources/META-INF/MANIFEST.FM
+
+# chmod compiler and JAR build to be executable
+chmod +x $projectName/javacompile
+chmod +x $projectName/jar-it
