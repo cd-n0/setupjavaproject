@@ -46,6 +46,9 @@ touch $projectName/src/$className/java/$tld/$domain/$projectName/$className.java
 # create compile bash file
 touch $projectName/javacompile
 
+# run compiled java project
+touch $projectName/javarun
+
 # build jar file
 touch $projectName/jar-it
 
@@ -54,10 +57,12 @@ touch $projectName/jar-it
 
 # Fill all necessary files with proper text
 printf '#!/bin/sh\njavac -cp ./src/'$className'/java ./src/'$className'/java/'$tld'/'$domain'/'$projectName'/*.java -d ./build/\n'>$projectName/javacompile
-printf '#!/bin/sh\njar cvfm '$projectName'.jar ./src/'$className'/resources/META-INF/MANIFEST.FM -C ./build/ .\n'>jar-it
+printf '#!/bin/sh\ncd build\njava '$packageName'.'$projectName'.'$className'\ncd ..\n'>$projectName/javarun
+printf '#!/bin/sh\njar cvfm '$projectName'.jar ./src/'$className'/resources/META-INF/MANIFEST.FM -C ./build/ .\n'>$projectName/jar-it
 printf 'package '$tld'.'$domain'.'$projectName';\npublic class '$className'{\n     public static void main(String args[]){\n     }\n}'>$projectName/src/$className/java/$tld/$domain/$projectName/$className.java
 printf 'Manifest-Version: 1.0\nClass-Path: .\nMain-Class: '$tld'.'$domain'.'$projectName'.'$className'\n\n'>$projectName/src/$className/resources/META-INF/MANIFEST.FM
 
-# chmod compiler and JAR build to be executable
+# chmod compiler, runner and JAR build to be executable
 chmod +x $projectName/javacompile
+chmod +x $projectName/javarun
 chmod +x $projectName/jar-it
