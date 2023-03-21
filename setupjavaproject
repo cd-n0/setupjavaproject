@@ -32,16 +32,16 @@ tld=$(printf $packageName | cut -d '.' -f 1)
 domain=$(printf $packageName | cut -d '.' -f 2)
 
 # creation of project folders
-mkdir -p $projectName/src/$className/java/$tld/$domain/$projectName
+mkdir -p $projectName/src/main/java/$tld/$domain/$projectName
 mkdir $projectName/libs
 mkdir $projectName/build
-mkdir -p $projectName/src/$className/resources/META-INF
+mkdir -p $projectName/src/main/resources/META-INF
 
 # creation of manifest file
-touch $projectName/src/$className/resources/META-INF/MANIFEST.FM
+touch $projectName/src/main/resources/META-INF/MANIFEST.FM
 
 # initial java source file
-touch $projectName/src/$className/java/$tld/$domain/$projectName/$className.java
+touch $projectName/src/main/java/$tld/$domain/$projectName/$className.java
 
 # create compile bash file
 touch $projectName/javacompile
@@ -56,11 +56,11 @@ touch $projectName/jar-it
 #touch $projectName/README.md
 
 # Fill all necessary files with proper text
-printf '#!/bin/sh\njavac -cp ./src/'$className'/java ./src/'$className'/java/'$tld'/'$domain'/'$projectName'/*.java -d ./build/\n'>$projectName/javacompile
+printf '#!/bin/sh\njavac -cp ./src/main/java ./src/main/java/'$tld'/'$domain'/'$projectName'/*.java -d ./build/\n'>$projectName/javacompile
 printf '#!/bin/sh\ncd build\njava '$packageName'.'$projectName'.'$className'\ncd ..\n'>$projectName/javarun
-printf '#!/bin/sh\njar cvfm '$projectName'.jar ./src/'$className'/resources/META-INF/MANIFEST.FM -C ./build/ .\n'>$projectName/jar-it
-printf 'package '$tld'.'$domain'.'$projectName';\npublic class '$className'{\n     public static void main(String args[]){\n     }\n}'>$projectName/src/$className/java/$tld/$domain/$projectName/$className.java
-printf 'Manifest-Version: 1.0\nClass-Path: .\nMain-Class: '$tld'.'$domain'.'$projectName'.'$className'\n\n'>$projectName/src/$className/resources/META-INF/MANIFEST.FM
+printf '#!/bin/sh\njar cvfm '$projectName'.jar ./src/main/resources/META-INF/MANIFEST.FM -C ./build/ .\n'>$projectName/jar-it
+printf 'package '$tld'.'$domain'.'$projectName';\npublic class '$className'{\n     public static void main(String args[]){\n     }\n}'>$projectName/src/main/java/$tld/$domain/$projectName/$className.java
+printf 'Manifest-Version: 1.0\nClass-Path: .\nMain-Class: '$tld'.'$domain'.'$projectName'.'$className'\n\n'>$projectName/src/main/resources/META-INF/MANIFEST.FM
 
 # chmod compiler, runner and JAR build to be executable
 chmod +x $projectName/javacompile
