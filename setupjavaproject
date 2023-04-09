@@ -56,11 +56,11 @@ touch $projectName/jar-it
 #touch $projectName/README.md
 
 # Fill all necessary files with proper text
-printf '#!/bin/sh\njavac -cp ./src/main/java ./src/main/java/'$tld'/'$domain'/'$projectName'/*.java -d ./build/\n'>$projectName/javacompile
-printf '#!/bin/sh\ncd build\njava '$packageName'.'$projectName'.'$className'\ncd ..\n'>$projectName/javarun
-printf '#!/bin/sh\njar cvfm '$projectName'.jar ./src/main/resources/META-INF/MANIFEST.FM -C ./build/ .\n'>$projectName/jar-it
-printf 'package '$tld'.'$domain'.'$projectName';\npublic class '$className'{\n     public static void main(String args[]){\n     }\n}'>$projectName/src/main/java/$tld/$domain/$projectName/$className.java
-printf 'Manifest-Version: 1.0\nClass-Path: .\nMain-Class: '$tld'.'$domain'.'$projectName'.'$className'\n\n'>$projectName/src/main/resources/META-INF/MANIFEST.FM
+printf '#!/bin/sh\nfind src/main/java -name "*.java" -print0 | xargs -0 javac -cp ./src/main/java -d ./build/' > $projectName/javacompile   #javac -cp ./src/main/java ./src/main/java/'$tld'/'$domain'/'$projectName'/*.java -d ./build/\n'>$projectName/javacompile
+printf '#!/bin/sh\ncd build\njava '$packageName'.'$projectName'.'$className'\ncd ..' > $projectName/javarun
+printf '#!/bin/sh\njar cvfm '$projectName'.jar ./src/main/resources/META-INF/MANIFEST.FM -C ./build/ .' > $projectName/jar-it
+printf 'package '$tld'.'$domain'.'$projectName';\npublic class '$className'{\n     public static void main(String args[]){\n     }\n}' > $projectName/src/main/java/$tld/$domain/$projectName/$className.java
+printf 'Manifest-Version: 1.0\nClass-Path: .\nMain-Class: '$tld'.'$domain'.'$projectName'.'$className > $projectName/src/main/resources/META-INF/MANIFEST.FM
 
 # chmod compiler, runner and JAR build to be executable
 chmod +x $projectName/javacompile
