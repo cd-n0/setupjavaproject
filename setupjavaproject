@@ -11,7 +11,8 @@ valid_input=false
 while [ "$valid_input" = false ]; do
     printf "Enter a class name:\nExample: MyClass\nClass Name: "
     read className
-    [[ "$className" =~ ^[A-Z] && "$className" =~ ^[A-Za-z0-9_\$]*$ ]] &&\
+    echo "$className" | grep '^[A-Z]' >/dev/null && \
+    echo "$className" | grep '^[A-Za-z0-9_\$]*$' >/dev/null &&\
         valid_input=true || \
         printf "Invalid class name. Class names must start with a capital letter and can only contain letters, numbers, dollar signs, and underscores.\n"
 done
