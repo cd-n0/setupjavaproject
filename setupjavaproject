@@ -28,41 +28,41 @@ while [ "$valid_input" = false ]; do
 done
 printf "Package name is: $packageName\n"
 
-tld=$(printf $packageName | cut -d '.' -f 1)
-domain=$(printf $packageName | cut -d '.' -f 2)
+tld=$(printf "$packageName" | cut -d '.' -f 1)
+domain=$(printf "$packageName" | cut -d '.' -f 2)
 
 # creation of project folders
-mkdir -p $projectName/src/main/java/$tld/$domain/$projectName
-mkdir $projectName/libs
-mkdir $projectName/build
-mkdir -p $projectName/src/main/resources/META-INF
+mkdir -p "$projectName"/src/main/java/"$tld"/"$domain"/"$projectName"
+mkdir "$projectName"/libs
+mkdir "$projectName"/build
+mkdir -p "$projectName"/src/main/resources/META-INF
 
 # creation of manifest file
-touch $projectName/src/main/resources/META-INF/MANIFEST.FM
+touch "$projectName"/src/main/resources/META-INF/MANIFEST.FM
 
 # initial java source file
-touch $projectName/src/main/java/$tld/$domain/$projectName/$className.java
+touch "$projectName"/src/main/java/"$tld"/"$domain"/"$projectName"/"$className".java
 
 # create compile bash file
-touch $projectName/javacompile
+touch "$projectName"/javacompile
 
 # run compiled java project
-touch $projectName/javarun
+touch "$projectName"/javarun
 
 # build jar file
-touch $projectName/jar-it
+touch "$projectName"/jar-it
 
 # Uncomment for readme creation
 #touch $projectName/README.md
 
 # Fill all necessary files with proper text
-printf '#!/bin/sh\nfind src/main/java -name "*.java" -print0 | xargs -0 javac -cp ./src/main/java -d ./build/' > $projectName/javacompile   #javac -cp ./src/main/java ./src/main/java/'$tld'/'$domain'/'$projectName'/*.java -d ./build/\n'>$projectName/javacompile
-printf '#!/bin/sh\ncd build\njava '$packageName'.'$projectName'.'$className'\ncd ..' > $projectName/javarun
-printf '#!/bin/sh\njar cvfm '$projectName'.jar ./src/main/resources/META-INF/MANIFEST.FM -C ./build/ .' > $projectName/jar-it
-printf 'package '$tld'.'$domain'.'$projectName';\npublic class '$className'{\n     public static void main(String args[]){\n     }\n}' > $projectName/src/main/java/$tld/$domain/$projectName/$className.java
-printf 'Manifest-Version: 1.0\nClass-Path: .\nMain-Class: '$tld'.'$domain'.'$projectName'.'$className > $projectName/src/main/resources/META-INF/MANIFEST.FM
+printf '#!/bin/sh\nfind src/main/java -name "*.java" -print0 | xargs -0 javac -cp ./src/main/java -d ./build/' > "$projectName"/javacompile   #javac -cp ./src/main/java ./src/main/java/'$tld'/'$domain'/'$projectName'/*.java -d ./build/\n'>$projectName/javacompile
+printf '#!/bin/sh\ncd build\njava '"$packageName"'.'"$projectName"'.'"$className"'\ncd ..' > "$projectName"/javarun
+printf '#!/bin/sh\njar cvfm '"$projectName"'.jar ./src/main/resources/META-INF/MANIFEST.FM -C ./build/ .' > "$projectName"/jar-it
+printf 'package '"$tld"'.'"$domain"'.'"$projectName"';\npublic class '"$className"'{\n     public static void main(String args[]){\n     }\n}' > "$projectName"/src/main/java/"$tld"/"$domain"/"$projectName"/"$className".java
+printf 'Manifest-Version: 1.0\nClass-Path: .\nMain-Class: '"$tld"'.'"$domain"'.'"$projectName"'.'"$className" > "$projectName"/src/main/resources/META-INF/MANIFEST.FM
 
 # chmod compiler, runner and JAR build to be executable
-chmod +x $projectName/javacompile
-chmod +x $projectName/javarun
-chmod +x $projectName/jar-it
+chmod +x "$projectName"/javacompile
+chmod +x "$projectName"/javarun
+chmod +x "$projectName"/jar-it
